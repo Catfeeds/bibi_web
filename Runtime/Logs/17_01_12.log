@@ -1,0 +1,9 @@
+[ 2017-01-12T09:34:33+08:00 ] ::1 /wwwroot/index.php?s=/admin/menu/other.html
+ERR: 非法操作:other
+
+[ 2017-01-12T10:01:43+08:00 ] ::1 /wwwroot/index.php?s=/admin/hero_message/add.html
+ERR: 模板不存在:./Application/Admin/View/HeroMessage/add.html
+
+[ 2017-01-12T15:18:54+08:00 ] ::1 /wwwroot/index.php?s=/admin/hero_message/edit/id/1.html
+ERR: 非法操作:edit
+

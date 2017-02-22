@@ -1,0 +1,98 @@
+<link rel="stylesheet" href="/lib/webuploader/webuploader.css" />
+<link rel="stylesheet" href="/static//uploadify1.css" />
+<script type="text/javascript" src="/lib/uploadify/jquery.uploadify.min.js"></script>
+<script type="text/javascript" src="/lib/webuploader/webuploader.js"></script>
+<script type="text/javascript" src="/lib/My97DatePicker/WdatePicker.js"></script>
+
+<extend name="Public/base" />
+
+<block name="body">
+
+<!--标题-->
+<div class='main-title'>
+	<h2>漫画</h2>
+</div>
+
+<div class="row cl">
+    <label class="form-label col-xs-4 col-sm-3"><span class="c-red"></span>上传漫画：</label>
+</div>
+
+
+<div class="row cl">
+    <label class="form-label col-xs-4 col-sm-3"><span class="c-red"></span></label>
+    <div class="formControls col-xs-8 col-sm-9">
+        <div id="uploader">
+            <div class="controls" id="div_picture">
+                <label class="item-label">(图片不能大于：{$Think.config.PICTURE_UPLOAD.maxSize}KB)</label>
+                <input type="file" id="upload_picture_1" style="float:left;">
+                <input type="hidden" name="image" id="image" value=""/>
+                <div class="upload-img-box">
+
+                </div>
+                <div class="upload-img-info">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+//上传图片
+/* 初始化上传插件 */
+$("#upload_picture_1").uploadify({
+    'fileSizeLimit' : '<{$Think.config.PICTURE_UPLOAD.maxSize}>KB',
+    "height"          : 30,
+    "swf"             : "/lib/uploadify/uploadify.swf",
+    "fileObjName"     : "file",
+    "formData":{ 'is_thum': 1,"width":320,"height":320 },
+    "buttonText"      : "上传图片",
+    "uploader"        : "",
+    "width"           : 120,
+    'removeTimeout'	  : 1,
+    'fileTypeExts'	  : '<{$Think.config.PICTURE_UPLOAD.exts_js}>',
+    "onUploadSuccess" : uploadPicture_1,
+    'onFallback' : function() {
+        alert('未检测到兼容版本的Flash.');
+    }
+});
+function uploadPicture_1(file, data){
+    var data = $.parseJSON(data);
+    var src = '';
+    var high = '';
+    var width = '';
+    if(data.status){
+        $("#image").val(data.path  +"?thum="+data.thum+"&thumWidth="+data.thumWidth+"&thumHeight="+data.thumHeight+"&path="+data.path+
+        "&with="+data.with+"&high="+data.high);
+        src = data.url || '<{$Think.config.PIC_DOMAIN}>' + data.path;
+        high = data.high;
+        width = data.with;
+        $("#image").parent().find('.upload-img-box').html(
+            '<div class="upload-pre-item"><img width="50"  src="' + src + '"/></div>'
+        );
+        $("#image").parent().find('.upload-img-info').html(
+            '<div class="upload-pre-item1">图片规格: 高' + high + 'px * 宽' + width +'px</div>'
+        );
+    }
+}
+</script>
+
+
+<div class="cartoon-wrap">
+	<form id="form" acton="{:U('index')}" method="post" class="form-horizontal doc-modal-form">
+		<div class="test">
+			<input type="text" name="doc" value="">
+		</div>
+		<!--提交按钮-->
+		<div class="form-cartoon">
+			<div class="controls edit_sort_btn">
+				<button class="btn submit-btn ajax-post no-refresh" type="submit" target-form="form-horizontal">确 定</button>
+				<button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+			</div>
+		</div>
+	</form>
+
+</block>
+
+</div>
