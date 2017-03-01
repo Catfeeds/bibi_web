@@ -28,6 +28,21 @@ abstract class Controller {
      */      
     protected $config   =   array();
 
+
+    /**
+     * 是否记录日志
+     *
+     * @var bool|null
+     */
+    protected $isLog = null;
+
+    /**
+     * 返回json时，空data的值
+     *
+     * @var null
+     */
+    protected $emptyData = null;
+
    /**
      * 架构函数 取得模板对象实例
      * @access public
@@ -301,6 +316,90 @@ abstract class Controller {
         // 执行后续操作
         Hook::listen('action_end');
     }
+
+    /**
+     * 成功返回json
+     *
+     * @param array  $data
+     * @param string $msg
+     * @param bool   $is_log
+     * @param int    $code
+     * @param array  $header
+     * @param array  $options
+     * @return \think\response\Json
+     */
+    protected function sucJson(array $data = [], $msg = '', $is_log = null, $code = 200, $header = [], $options = [])
+    {
+        if ($this->isWriteLog($is_log)) { // 写入日志表
+            $this->LogManage->write($msg);
+        }
+        $func = input('request.' . Config::get('var_JSONP_handler'), '') ? 'jsonp' : 'json';
+    
+        return $func($data, $code, $header, $options);
+    }
+
+    /**
+     * 返回固定格式的json
+     *
+     * @param mixed  $data
+     * @param string $msg
+     * @param int    $code
+     * @return \think\response\Json
+     */
+    protected function sucSysJson($data, $msg = '', $code = 200)
+    {
+        return $this->sucJson(
+            $this->defaultAjaxData($code, $data, $msg)
+        );
+    }
+
+    /**
+     * 默认ajax数据
+     *
+     * @return array
+     */
+    protected function defaultAjaxData($code = 0, $data = null, $msg = '')
+    {
+        return [
+            'code' => $code,
+            'data' => $this->disEmptyData($data),
+            'msg'  => $msg,
+        ];
+    }
+
+    /**
+     * 用于处理$this->emptyData
+     *
+     * @param mixed $data
+     * @return mixed
+     * @author aozhuochao<aozhuochao@99cj.com.cn>
+     */
+    private function disEmptyData($data)
+    {
+        if ($this->emptyData !== null && empty($data)) {
+            if (is_string($this->emptyData) && strtolower($this->emptyData) === 'object'){
+                $this->emptyData = new \stdClass();
+            }elseif(is_string($this->emptyData) && strtolower($this->emptyData) === 'array'){
+                $this->emptyData = [];
+            }
+            
+            $data = $this->emptyData;
+        }
+        
+        return $data;
+    }
+
+    /**
+     * 是否写日志
+     *
+     * @param null|bool $is_log
+     * @return bool
+     */
+    protected function isWriteLog($is_log = null)
+    {
+        return ($is_log === null && $this->isLog === null) || $is_log || $this->isLog;
+    }
+    
 }
 // 设置控制器别名 便于升级
 class_alias('Think\Controller','Think\Action');

@@ -10,6 +10,7 @@ class ReptileController extends AdminController{
 	 * 抓取图片
 	 */
 	public function captureImage(){
+		return $this->sucSysJson(123);die;
 		for ($pageno = 1 ; $pageno < 5; $pageno ++) {
 		    $content = file_get_contents('http://www.haha.mx/topic/1/new/'.$pageno);
 		    

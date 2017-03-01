@@ -1,0 +1,185 @@
+[1mdiff --git a/Application/Admin/Controller/ReptileController.class.php b/Application/Admin/Controller/ReptileController.class.php[m
+[1mindex 47b90bb..acb7661 100644[m
+[1m--- a/Application/Admin/Controller/ReptileController.class.php[m
+[1m+++ b/Application/Admin/Controller/ReptileController.class.php[m
+[36m@@ -10,6 +10,7 @@[m [mclass ReptileController extends AdminController{[m
+ 	 * 抓取图片[m
+ 	 */[m
+ 	public function captureImage(){[m
+[32m+[m		[32mreturn $this->sucSysJson(123);die;[m
+ 		for ($pageno = 1 ; $pageno < 5; $pageno ++) {[m
+ 		    $content = file_get_contents('http://www.haha.mx/topic/1/new/'.$pageno);[m
+ 		    [m
+[1mdiff --git a/Application/Admin/View/Public/login.html b/Application/Admin/View/Public/login.html[m
+[1mindex c8f50db..9971799 100644[m
+[1m--- a/Application/Admin/View/Public/login.html[m
+[1m+++ b/Application/Admin/View/Public/login.html[m
+[36m@@ -2,7 +2,7 @@[m
+ <html lang="en">[m
+     <head>[m
+         <meta charset="UTF-8">[m
+[31m-        <title>欢迎您登录OneThink</title>[m
+[32m+[m[32m        <title>hansen key</title>[m
+         <link rel="stylesheet" type="text/css" href="__CSS__/login.css" media="all">[m
+        	<link rel="stylesheet" type="text/css" href="__CSS__/{$Think.config.COLOR_STYLE}.css" media="all">[m
+     </head>[m
+[36m@@ -13,7 +13,7 @@[m
+             <div class="login-body">[m
+                 <div class="login-main pr">[m
+                     <form action="{:U('login')}" method="post" class="login-form">[m
+[31m-                        <h3 class="welcome"><i class="login-logo"></i>人家可是男子汉</h3>[m
+[32m+[m[32m                        <h3 class="welcome"><i class="login-logo"></i></h3>[m
+                         <div id="itemBox" class="item-box">[m
+                             <div class="item">[m
+                                 <i class="icon-login-user"></i>[m
+[1mdiff --git a/Application/Common/Conf/config.php b/Application/Common/Conf/config.php[m
+[1mindex 8cf5e0e..0e01564 100644[m
+[1m--- a/Application/Common/Conf/config.php[m
+[1m+++ b/Application/Common/Conf/config.php[m
+[36m@@ -48,4 +48,6 @@[m [mreturn array([m
+ [m
+     /* 文档模型配置 (文档模型核心配置，请勿更改) */[m
+     'DOCUMENT_MODEL_TYPE' => array(2 => '主题', 1 => '目录', 3 => '段落'),[m
+[32m+[m[32m    // 默认JSONP处理方法[m
+[32m+[m[32m    'var_jsonp_handler' => 'callback',[m
+ );[m
+[1mdiff --git a/Runtime/Cache/Admin/3c5566b2bfbf6ef00ac5366ba47246fe.php b/Runtime/Cache/Admin/3c5566b2bfbf6ef00ac5366ba47246fe.php[m
+[1mindex c1471ee..8016afe 100644[m
+[1m--- a/Runtime/Cache/Admin/3c5566b2bfbf6ef00ac5366ba47246fe.php[m
+[1m+++ b/Runtime/Cache/Admin/3c5566b2bfbf6ef00ac5366ba47246fe.php[m
+[36m@@ -2,7 +2,7 @@[m
+ <html lang="en">[m
+     <head>[m
+         <meta charset="UTF-8">[m
+[31m-        <title>欢迎您登录OneThink</title>[m
+[32m+[m[32m        <title>hansen key</title>[m
+         <link rel="stylesheet" type="text/css" href="/wwwroot/Public/Admin/css/login.css" media="all">[m
+        	<link rel="stylesheet" type="text/css" href="/wwwroot/Public/Admin/css/<?php echo (C("COLOR_STYLE")); ?>.css" media="all">[m
+     </head>[m
+[36m@@ -13,7 +13,7 @@[m
+             <div class="login-body">[m
+                 <div class="login-main pr">[m
+                     <form action="<?php echo U('login');?>" method="post" class="login-form">[m
+[31m-                        <h3 class="welcome"><i class="login-logo"></i>人家可是男子汉</h3>[m
+[32m+[m[32m                        <h3 class="welcome"><i class="login-logo"></i></h3>[m
+                         <div id="itemBox" class="item-box">[m
+                             <div class="item">[m
+                                 <i class="icon-login-user"></i>[m
+[1mdiff --git a/ThinkPHP/Library/Think/Controller.class.php b/ThinkPHP/Library/Think/Controller.class.php[m
+[1mindex fcc0dc1..06d7546 100644[m
+[1m--- a/ThinkPHP/Library/Think/Controller.class.php[m
+[1m+++ b/ThinkPHP/Library/Think/Controller.class.php[m
+[36m@@ -28,6 +28,21 @@[m [mabstract class Controller {[m
+      */      [m
+     protected $config   =   array();[m
+ [m
+[32m+[m
+[32m+[m[32m    /**[m
+[32m+[m[32m     * 是否记录日志[m
+[32m+[m[32m     *[m
+[32m+[m[32m     * @var bool|null[m
+[32m+[m[32m     */[m
+[32m+[m[32m    protected $isLog = null;[m
+[32m+[m
+[32m+[m[32m    /**[m
+[32m+[m[32m     * 返回json时，空data的值[m
+[32m+[m[32m     *[m
+[32m+[m[32m     * @var null[m
+[32m+[m[32m     */[m
+[32m+[m[32m    protected $emptyData = null;[m
+[32m+[m
+    /**[m
+      * 架构函数 取得模板对象实例[m
+      * @access public[m
+[36m@@ -301,6 +316,90 @@[m [mabstract class Controller {[m
+         // 执行后续操作[m
+         Hook::listen('action_end');[m
+     }[m
+[32m+[m
+[32m+[m[32m    /**[m
+[32m+[m[32m     * 成功返回json[m
+[32m+[m[32m     *[m
+[32m+[m[32m     * @param array  $data[m
+[32m+[m[32m     * @param string $msg[m
+[32m+[m[32m     * @param bool   $is_log[m
+[32m+[m[32m     * @param int    $code[m
+[32m+[m[32m     * @param array  $header[m
+[32m+[m[32m     * @param array  $options[m
+[32m+[m[32m     * @return \think\response\Json[m
+[32m+[m[32m     */[m
+[32m+[m[32m    protected function sucJson(array $data = [], $msg = '', $is_log = null, $code = 200, $header = [], $options = [])[m
+[32m+[m[32m    {[m
+[32m+[m[32m        if ($this->isWriteLog($is_log)) { // 写入日志表[m
+[32m+[m[32m            $this->LogManage->write($msg);[m
+[32m+[m[32m        }[m
+[32m+[m[32m        $func = input('request.' . Config::get('var_JSONP_handler'), '') ? 'jsonp' : 'json';[m
+[32m+[m[41m    [m
+[32m+[m[32m        return $func($data, $code, $header, $options);[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    /**[m
+[32m+[m[32m     * 返回固定格式的json[m
+[32m+[m[32m     *[m
+[32m+[m[32m     * @param mixed  $data[m
+[32m+[m[32m     * @param string $msg[m
+[32m+[m[32m     * @param int    $code[m
+[32m+[m[32m     * @return \think\response\Json[m
+[32m+[m[32m     */[m
+[32m+[m[32m    protected function sucSysJson($data, $msg = '', $code = 200)[m
+[32m+[m[32m    {[m
+[32m+[m[32m        return $this->sucJson([m
+[32m+[m[32m            $this->defaultAjaxData($code, $data, $msg)[m
+[32m+[m[32m        );[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    /**[m
+[32m+[m[32m     * 默认ajax数据[m
+[32m+[m[32m     *[m
+[32m+[m[32m     * @return array[m
+[32m+[m[32m     */[m
+[32m+[m[32m    protected function defaultAjaxData($code = 0, $data = null, $msg = '')[m
+[32m+[m[32m    {[m
+[32m+[m[32m        return [[m
+[32m+[m[32m            'code' => $code,[m
+[32m+[m[32m            'data' => $this->disEmptyData($data),[m
+[32m+[m[32m            'msg'  => $msg,[m
+[32m+[m[32m        ];[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    /**[m
+[32m+[m[32m     * 用于处理$this->emptyData[m
+[32m+[m[32m     *[m
+[32m+[m[32m     * @param mixed $data[m
+[32m+[m[32m     * @return mixed[m
+[32m+[m[32m     * @author aozhuochao<aozhuochao@99cj.com.cn>[m
+[32m+[m[32m     */[m
+[32m+[m[32m    private function disEmptyData($data)[m
+[32m+[m[32m    {[m
+[32m+[m[32m        if ($this->emptyData !== null && empty($data)) {[m
+[32m+[m[32m            if (is_string($this->emptyData) && strtolower($this->emptyData) === 'object'){[m
+[32m+[m[32m                $this->emptyData = new \stdClass();[m
+[32m+[m[32m            }elseif(is_string($this->emptyData) && strtolower($this->emptyData) === 'array'){[m
+[32m+[m[32m                $this->emptyData = [];[m
+[32m+[m[32m            }[m
+[32m+[m[41m            [m
+[32m+[m[32m            $data = $this->emptyData;[m
+[32m+[m[32m        }[m
+[32m+[m[41m        [m
+[32m+[m[32m        return $data;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    /**[m
+[32m+[m[32m     * 是否写日志[m
+[32m+[m[32m     *[m
+[32m+[m[32m     * @param null|bool $is_log[m
+[32m+[m[32m     * @return bool[m
+[32m+[m[32m     */[m
+[32m+[m[32m    protected function isWriteLog($is_log = null)[m
+[32m+[m[32m    {[m
+[32m+[m[32m        return ($is_log === null && $this->isLog === null) || $is_log || $this->isLog;[m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+ }[m
+ // 设置控制器别名 便于升级[m
+ class_alias('Think\Controller','Think\Action');[m
+\ No newline at end of file[m
